@@ -1,0 +1,167 @@
+/* 全域設定 */
+body {
+    font-family: "Microsoft JhengHei", sans-serif;
+    padding: 20px;
+    line-height: 1.6;
+    background-color: #f4f7f6;
+}
+
+.container {
+    width: 95%;          /* 在小螢幕時佔據 95% 寬度 */
+    max-width: 600px;    /* 在大螢幕時最大只到 600px，避免太寬難以閱讀 */
+    margin: 0 auto;      /* 居中 */
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+
+h2 {
+    color: #2c3e50;
+    text-align: center;
+}
+
+/* 當前產季區塊樣式 */
+.seasonal-box {
+    background: #e8f5e9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    border: 1px solid #c8e6c9;
+}
+
+.seasonal-title {
+    font-weight: bold;
+    color: #2e7d32;
+    margin-bottom: 10px;
+    display: block;
+    border-bottom: 1px solid #a5d6a7;
+    padding-bottom: 5px;
+}
+
+.seasonal-list {
+    /* display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); */
+    display: flex;
+    flex-wrap: wrap;    /* 自動換行 */
+    gap: 10px;          /* 卡片之間的間距 */
+    list-style: none;
+    padding: 0;
+}
+
+.seasonal-item {
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.95em;
+    border: 1px solid #dee2e6;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+    text-align: center;
+    flex: 1 1 calc(50% - 10px); /* 手機版預設兩格一排 */
+    box-sizing: border-box;
+}
+
+/* 當螢幕非常小時 (例如手機直向)，改成一格一排 */
+@media (max-width: 480px) {
+    .seasonal-item {
+        flex: 1 1 100%;
+    }
+}
+
+/* 查詢表單樣式 */
+.form-group {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px dashed #ccc;
+}
+
+select {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+/* 查詢結果樣式 */
+#result {
+    margin-top: 20px;
+    padding: 15px;
+    border-left: 5px solid #27ae60;
+    background: #f1f8f4;
+    display: none;
+}
+
+.disclaimer {
+    margin-top: 30px;
+    font-size: 0.85em;
+    color: #888;          /* 灰色字體，看起來較柔和 */
+    text-align: center;   /* 置中顯示 */
+    line-height: 1.5;
+    border-top: 1px solid #eee; /* 加一條淡淡的分割線 */
+    padding-top: 15px;
+}
+
+.seasonal-item {
+    cursor: pointer; /* 讓滑鼠移上去變手指形狀 */
+    transition: background-color 0.2s;
+}
+
+
+.seasonal-item strong:hover {
+    color: #1b5e20; /* 移上去時文字顏色變深 */
+}
+
+/* 讓連結撐滿整個 div */
+.seasonal-link {
+    display: block;        /* 變成區塊元素，填滿寬高 */
+    text-decoration: none; /* 移除超連結底線 */
+    color: inherit;        /* 繼承原本的文字顏色 */
+    padding: 10px;         /* 增加內距，讓點擊範圍更大 */
+    height: 100%;          /* 確保高度也撐滿 */
+}
+
+/* 滑鼠移上去時，讓整個區塊有反應 */
+.seasonal-item:hover {
+    background-color: #f0fdf4; /* 淡淡的淺綠色背景 */
+    transform: translateY(-2px); /* 輕微上浮效果，看起來更像可以點 */
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* 針對蔬菜名稱的特別樣式 */
+.veg-name {
+    color: #2e7d32;
+    font-size: 1.1em;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* 查詢結果的容器 */
+.result-card {
+    line-height: 1.8;
+    position: relative;
+}
+
+/* 查詢結果下方的食譜按鈕 */
+.recipe-btn {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 8px 16px;
+    background-color: #2e7d32;
+    color: white !important;
+    text-decoration: none;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: background-color 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.recipe-btn:hover {
+    background-color: #1b5e20;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}

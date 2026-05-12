@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>當日蔬菜行情查詢系統</title>
+    <!-- 引入外部 CSS 檔案 -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>🥬 蔬菜行情查詢</h2>
+
+    <!-- 當前產季蔬菜顯示區 -->
+    <div id="seasonal-section" class="seasonal-box">
+        <span class="seasonal-title" id="month-label">載入中...</span>
+        <div id="seasonal-content" class="seasonal-list">
+            <!-- 由 JS 動態產生 -->
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label for="vegSelect"><strong>個別查詢：</strong></label>
+        <select id="vegSelect" onchange="queryPrice()">
+            <option value="">請選擇蔬菜...</option>
+        </select>
+    </div>
+
+    <div id="result"></div>
+
+    <!-- 加在原本的 container 內部最後面 -->
+    <p class="disclaimer">
+    💡 小提醒：本網站資料源自 2025-2026 年政府公開資料的台中零售市場價格，顯示價格為歷史參考行情，實際售價請以市場現場標示為準。（價格均為"每斤"價格）
+</p>
+</div>
+
+<!-- 引入外部 JS 檔案 -->
+<script src="script.js"></script>
+
+</body>
+</html>
