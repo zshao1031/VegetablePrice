@@ -1,2 +1,15 @@
-# VegetablePrice
+# 專案名稱：🥬當日蔬菜行情查詢系統（VegetablePrice）
+
+## 網站連結：[https://zshao1031.github.io/VegetablePrice/](https://zshao1031.github.io/VegetablePrice/)
+
+## 功能簡介：
+
 查詢蔬菜參考價格用
+
+1. 自動推薦當季蔬菜
+
+2. 點擊蔬菜名稱自動搜尋 Google 食譜。
+
+3. 查詢蔬菜參考價格（依據該蔬菜的歷史價格資料）
+
+※資料來源：本網站資料源自 2025-2026 年政府公開資料的台中零售市場價格，顯示價格為歷史參考行情，實際售價請以市場現場標示為準。（價格均為"每斤"價格）
