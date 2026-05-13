@@ -35,25 +35,45 @@ function setupMenu(vegList) {
 function renderSeasonal() {
     const now = new Date();
     const monthStr = String(now.getMonth() + 1).padStart(2, '0');
-    const todayKey = monthStr + String(now.getDate()).padStart(2, '0');
+    const monthNum = now.getMonth() + 1;
+    const date = String(now.getDate()).padStart(2, '0');
+    const todayKey = monthStr + date;
     const content = document.getElementById('seasonal-content');
     const label = document.getElementById('month-label');
     
     label.textContent = `🌟 今日 (${now.getMonth() + 1}月) 推薦產季蔬菜：`;
-    content.innerHTML = ""; 
+    const currentSeasonList = seasonData[monthStr];
 
-    if (seasonData[monthStr]) {
-        seasonData[monthStr].forEach(vegName => {
+    if (currentSeasonList) {
+        currentSeasonList.forEach(vegName => {
             const itemDiv = document.createElement('div');
             itemDiv.className = 'seasonal-item';
+            
             const searchQuery = encodeURIComponent(`${vegName} 食譜`);
             const searchUrl = `https://www.google.com/search?q=${searchQuery}`;
-            let price = "無行情";
+
+            let priceInfo = "<br><span style='font-size:0.8em; color:gray;'>(無行情)</span>";
+            
             if (vegPriceData[todayKey]) {
-                const match = vegPriceData[todayKey].find(v => v.name === vegName);
-                if (match) price = `${match.min}~${match.max} (均${match.avg})`;
+                const priceMatch = vegPriceData[todayKey].find(v => v.name === vegName);
+                if (priceMatch) {
+                    // 這裡恢復你原本附圖中的漂亮排版
+                    priceInfo = `
+                        <div style="font-size: 0.85em; margin-top: 4px; color: #555;">
+                            ${priceMatch.min}~${priceMatch.max} 元<br>
+                            均價：<span style="color: #e67e22; font-weight: bold;">${priceMatch.avg}</span>
+                        </div>
+                    `;
+                }
             }
-            itemDiv.innerHTML = `<a href="${searchUrl}" target="_blank" class="seasonal-link"><strong class="veg-name">${vegName}</strong><br><span style="font-size:0.8em">${price}</span></a>`;
+            
+            // 保持整塊卡片可點擊，並套用正確的 HTML 結構
+            itemDiv.innerHTML = `
+                <a href="${searchUrl}" target="_blank" class="seasonal-link">
+                   <strong class="veg-name">${vegName}</strong>
+                   ${priceInfo}
+                </a>
+            `;
             content.appendChild(itemDiv);
         });
     }
@@ -83,6 +103,7 @@ function queryPrice() {
                 <div class="result-card">
                     <strong>今日日期：${todayKey}</strong><br>
                     蔬菜名稱：${item.name}<br>
+                    參考價格：${item.min} ~ ${item.max} 元<br>
                     平均價格：<span style="color:red; font-weight:bold;">${item.avg}</span> 元
                     <a href="${searchUrl}" target="_blank" class="recipe-btn">🍳 查看食譜</a>
                 </div>`;
