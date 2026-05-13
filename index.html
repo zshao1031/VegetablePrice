@@ -6,6 +6,7 @@
     <title>當日蔬菜行情查詢系統</title>
     <!-- 引入外部 CSS 檔案 -->
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -28,6 +29,10 @@
     </div>
 
     <div id="result"></div>
+
+    <div id="chart-container" style="display: none; margin-top: 20px; width: 100%;">
+        <canvas id="priceChart"></canvas>
+    </div>
 
     <!-- 加在原本的 container 內部最後面 -->
     <p class="disclaimer">

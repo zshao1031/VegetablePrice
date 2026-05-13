@@ -1,7 +1,9 @@
 let vegPriceData = {};
 let menuData = {};
 let seasonData = {};
+let myChart = null; // 用來儲存圖表物件
 
+// 1. 初始化資料載入
 window.onload = async function() {
     try {
         const [menuRes, priceRes, seasonRes] = await Promise.all([
@@ -24,6 +26,7 @@ window.onload = async function() {
     }
 };
 
+// 2. 設定下拉選單
 function setupMenu(vegList) {
     const select = document.getElementById('vegSelect');
     select.innerHTML = '<option value="">請選擇蔬菜...</option>'; 
@@ -35,10 +38,11 @@ function setupMenu(vegList) {
     });
 }
 
+// 3. 渲染當季推薦區
 function renderSeasonal() {
     const now = new Date();
-    const monthStr = String(now.getMonth() + 1).padStart(2, '0'); // 用於 Key: "05"
-    const monthNum = now.getMonth() + 1; // 用於顯示: 5
+    const monthStr = String(now.getMonth() + 1).padStart(2, '0');
+    const monthNum = now.getMonth() + 1;
     const date = String(now.getDate()).padStart(2, '0');
     const todayKey = monthStr + date;
 
@@ -55,7 +59,6 @@ function renderSeasonal() {
             const itemDiv = document.createElement('div');
             itemDiv.className = 'seasonal-item';
             
-            // 建立 Google 搜尋食譜的連結
             const searchQuery = encodeURIComponent(`${vegName} 食譜`);
             const searchUrl = `https://www.google.com/search?q=${searchQuery}`;
 
@@ -73,8 +76,6 @@ function renderSeasonal() {
                 }
             }
             
-
-            // 修改這裡：將名稱包裝成可點擊的連結，並加上 target="_blank" 開啟新分頁
             itemDiv.innerHTML = `
                 <a href="${searchUrl}" target="_blank" class="seasonal-link">
                    <strong class="veg-name">${vegName}</strong>
@@ -82,20 +83,21 @@ function renderSeasonal() {
                 </a>
             `;
             content.appendChild(itemDiv);
-
-
-            // itemDiv.innerHTML = `<strong>${vegName}</strong>${priceInfo}`;
-            // content.appendChild(itemDiv);
         });
     }
 }
 
+// 4. 執行個別查詢
 function queryPrice() {
     const resDiv = document.getElementById('result');
+    const chartContainer = document.getElementById('chart-container');
     const selectedVeg = document.getElementById('vegSelect').value;
     
+    // 如果沒選蔬菜，隱藏結果與圖表
     if (!selectedVeg) {
         resDiv.style.display = 'none';
+        if (chartContainer) chartContainer.style.display = 'none';
+        if (myChart) myChart.destroy();
         return;
     }
 
@@ -109,7 +111,6 @@ function queryPrice() {
     if (vegPriceData[todayKey]) {
         const item = vegPriceData[todayKey].find(v => v.name === selectedVeg);
         if (item) {
-            // --- 新增：定義食譜搜尋連結 ---
             const searchQuery = encodeURIComponent(`${item.name} 食譜`);
             const searchUrl = `https://www.google.com/search?q=${searchQuery}`;
 
@@ -119,16 +120,100 @@ function queryPrice() {
                     蔬菜名稱：${item.name}<br>
                     參考價格：${item.min} ~ ${item.max} 元<br>
                     平均價格：<span style="color:red; font-weight:bold;">${item.avg}</span> 元
-                    
-                    <a href="${searchUrl}" target="_blank" class="recipe-btn">
-                        🍳 查看 ${item.name} 食譜
-                    </a>
+                    <a href="${searchUrl}" target="_blank" class="recipe-btn">🍳 查看 ${item.name} 食譜</a>
                 </div>
             `;
+            
+            // 顯示圖表容器並繪圖
+            if (chartContainer) {
+                chartContainer.style.display = 'block';
+                renderChart(selectedVeg);
+            }
         } else {
             resDiv.innerHTML = `今日查無「${selectedVeg}」行情。`;
+            if (chartContainer) chartContainer.style.display = 'none';
         }
     } else {
         resDiv.innerHTML = `查無今日資料 (${todayKey})。`;
+        if (chartContainer) chartContainer.style.display = 'none';
     }
+}
+
+// 5. 繪製趨勢圖表
+function renderChart(vegName) {
+    const canvas = document.getElementById('priceChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    
+    // 排序日期並提取該蔬菜數據
+    const labels = Object.keys(vegPriceData).sort();
+    const prices = labels.map(date => {
+        const found = vegPriceData[date].find(v => v.name === vegName);
+        return found ? found.avg : null;
+    });
+
+    // 取得今日索引
+    const now = new Date();
+    const todayKey = String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
+    const todayIndex = labels.indexOf(todayKey);
+
+    // 銷毀舊圖表
+    if (myChart) {
+        myChart.destroy();
+    }
+
+    // 建立新圖表
+    myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: `${vegName} 全年平均價格趨勢`,
+                data: prices,
+                borderColor: '#2e7d32',
+                backgroundColor: 'rgba(46, 125, 50, 0.1)',
+                borderWidth: 2,
+                pointRadius: 0,
+                fill: true,
+                spanGaps: true
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    ticks: {
+                        callback: function(val, index) {
+                            // 只顯示每月1號標籤
+                            return labels[index].endsWith('01') ? labels[index] : '';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            }
+        },
+        plugins: [{
+            id: 'todayLine',
+            afterDraw: (chart) => {
+                if (todayIndex !== -1) {
+                    const {ctx, chartArea: {top, bottom}, scales: {x}} = chart;
+                    const xPos = x.getPixelForValue(todayIndex);
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.strokeStyle = 'red';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([5, 5]);
+                    ctx.moveTo(xPos, top);
+                    ctx.lineTo(xPos, bottom);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+        }]
+    });
 }
