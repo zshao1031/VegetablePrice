@@ -42,6 +42,8 @@ function renderSeasonal() {
     const label = document.getElementById('month-label');
     
     label.textContent = `🌟 今日 (${now.getMonth() + 1}月) 推薦產季蔬菜：`;
+    content.innerHTML = ""; // 確保每次渲染前清空
+    
     const currentSeasonList = seasonData[monthStr];
 
     if (currentSeasonList) {
@@ -51,13 +53,13 @@ function renderSeasonal() {
             
             const searchQuery = encodeURIComponent(`${vegName} 食譜`);
             const searchUrl = `https://www.google.com/search?q=${searchQuery}`;
+            const imgSrc = `img/${vegName}.jpg`;
 
             let priceInfo = "<br><span style='font-size:0.8em; color:gray;'>(無行情)</span>";
             
             if (vegPriceData[todayKey]) {
                 const priceMatch = vegPriceData[todayKey].find(v => v.name === vegName);
                 if (priceMatch) {
-                    // 這裡恢復你原本附圖中的漂亮排版
                     priceInfo = `
                         <div style="font-size: 0.85em; margin-top: 4px; color: #555;">
                             ${priceMatch.min}~${priceMatch.max} 元<br>
@@ -67,11 +69,15 @@ function renderSeasonal() {
                 }
             }
             
-            // 保持整塊卡片可點擊，並套用正確的 HTML 結構
             itemDiv.innerHTML = `
-                <a href="${searchUrl}" target="_blank" class="seasonal-link">
-                   <strong class="veg-name">${vegName}</strong>
-                   ${priceInfo}
+                <a href="${searchUrl}" target="_blank" class="seasonal-link" style="width: 100%; box-sizing: border-box;">
+                <div class="img-container">
+                    <img src="${imgSrc}" alt="${vegName}" onerror="this.src='img/default.jpg'">
+                </div>
+                <div class="info-container">
+                    <strong class="veg-name">${vegName}</strong>
+                    ${priceInfo}
+                </div>
                 </a>
             `;
             content.appendChild(itemDiv);
@@ -98,17 +104,34 @@ function queryPrice() {
     if (vegPriceData[todayKey]) {
         const item = vegPriceData[todayKey].find(v => v.name === selectedVeg);
         if (item) {
+            // 【修正點】：在這裡定義個別查詢所需的圖片路徑
+            const imgSrc = `img/${item.name}.jpg`; 
             const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(item.name + ' 食譜')}`;
+            
             resDiv.innerHTML = `
-                <div class="result-card">
-                    <strong>今日日期：${todayKey}</strong><br>
-                    蔬菜名稱：${item.name}<br>
-                    參考價格：${item.min} ~ ${item.max} 元<br>
-                    平均價格：<span style="color:red; font-weight:bold;">${item.avg}</span> 元
-                    <a href="${searchUrl}" target="_blank" class="recipe-btn">🍳 查看食譜</a>
-                </div>`;
+                <div class="result-card query-result-flex">
+                    <div class="left-column">
+                        <div class="img-container">
+                            <img src="${imgSrc}" alt="${item.name}" onerror="this.src='img/default.jpg'">
+                        </div>
+                        <a href="${searchUrl}" target="_blank" class="recipe-btn">
+                            🍳 查看食譜
+                        </a>
+                    </div>
+
+                    <div class="info-container">
+                        <strong>今日日期：${todayKey}</strong><br>
+                        蔬菜名稱：<span class="veg-name-highlight">${item.name}</span><br>
+                        參考價格：${item.min} ~ ${item.max} 元<br><br>
+                        平均價格：<span style="color:red; font-weight:bold; font-size:1.2em;">${item.avg}</span> 元
+                    </div>
+                </div>
+            `;
             chartContainer.style.display = 'block';
             renderChart(selectedVeg);
+        } else {
+            resDiv.innerHTML = `今日查無「${selectedVeg}」行情。`;
+            chartContainer.style.display = 'none';
         }
     }
 }
@@ -135,9 +158,9 @@ function renderChart(vegName) {
                 label: `${vegName} 趨勢`,
                 data: prices,
                 borderColor: '#2e7d32',
-                borderWidth: 1.5,      // 數字越小線越細 (原本可能是 2 或 3)
-                pointRadius: 0,        // 設為 0 即可取消上面的圈圈
-                pointHitRadius: 10,    // 雖然看不到圈圈，但滑鼠靠近時還是能觸發提示框
+                borderWidth: 1.5,
+                pointRadius: 0,
+                pointHitRadius: 10,
                 fill: false,
                 spanGaps: true
             }]

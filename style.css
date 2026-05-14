@@ -175,3 +175,185 @@ select {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+
+/* 蔬菜圖片樣式 */
+.veg-img {
+    width: 100%;          /* 寬度填滿卡片 */
+    height: 120px;        /* 固定高度 */
+    object-fit: cover;    /* 自動裁切多餘部分，確保圖片不變形 */
+    border-radius: 8px;   /* 圖片圓角 */
+    margin-bottom: 10px;  /* 與下方文字的間距 */
+    display: block;
+}
+
+/* 調整卡片內的文字排版，讓它水平置中 */
+.seasonal-link {
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+
+/* 卡片超連結容器：設定為 Flex 排列 */
+.seasonal-link {
+    display: flex;         /* 開啟彈性佈局 */
+    align-items: center;   /* 垂直置中 */
+    text-decoration: none;
+    color: inherit;
+    padding: 10px;
+}
+
+/* 左側圖片容器 */
+.img-container {
+    width: 100px;          /* 固定方框寬度 */
+    height: 80px;          /* 固定方框高度 */
+    background-color: #a8e6af; /* 淺綠色背景 */
+    border: 1.5px solid #2e7d32; /* 深綠色外框 */
+    border-radius: 12px;   /* 圓角 */
+    overflow: hidden;      /* 超出部分隱藏 */
+    margin-right: 15px;    /* 與右側文字的間距 */
+    flex-shrink: 0;        /* 防止圖片被擠壓 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.img-container img {
+    width: 90%;            /* 圖片縮小一點點，露出背景營造設計感 */
+    height: 90%;
+    object-fit: contain;   /* 完整顯示圖片內容 */
+}
+
+/* 右側資訊區塊 */
+.info-container {
+    text-align: left;      /* 文字靠左對齊 */
+    flex-grow: 1;          /* 佔滿剩餘空間 */
+}
+
+.veg-name {
+    font-size: 1.2em;
+    color: #2e7d32;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.price-details {
+    font-size: 0.9em;
+    color: #555;
+    line-height: 1.4;
+}
+
+.avg-price {
+    color: #e67e22;
+    font-weight: bold;
+}
+
+
+.seasonal-item {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin: 10px;
+    transition: transform 0.2s;
+    border: 1px solid #e0e0e0;
+}
+
+.seasonal-item:hover {
+    transform: translateY(-3px);
+} 
+
+/* 產季推薦的容器 */
+#seasonal-content {
+    display: grid;
+    /* 預設手機版：一列 */
+    grid-template-columns: 1fr; 
+    gap: 15px; /* 卡片之間的間距 */
+    padding: 10px;
+}
+
+/* 當螢幕寬度大於 768px (電腦/平板) 時切換為兩列 */
+@media (min-width: 768px) {
+    #seasonal-content {
+        grid-template-columns: 1fr 1fr; /* 左右對半，各佔 50% */
+    }
+}
+
+/* 確保卡片本身寬度是填滿格子的 */
+.seasonal-item {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+    border: 1px solid #e0e0e0;
+    width: 100%; /* 確保填滿 Grid 的格子 */
+    margin: 0;   /* 改用 Gap 控制間距，所以 Margin 歸零 */
+}
+
+/* 查詢結果的左側欄位：垂直排列、置中 */
+.left-column {
+    display: flex;
+    flex-direction: column; /* 讓內容上下排 */
+    align-items: center;    /* 水平置中 */
+    justify-content: center;
+    gap: 12px;              /* 圖片與按鈕的間距 */
+    flex-shrink: 0;         /* 防止被右側文字壓縮 */
+}
+
+/* 讓查詢結果的卡片維持 Flex 佈局 */
+.query-result-flex {
+    display: flex;
+    align-items: center;    /* 讓左右兩區塊垂直置中對齊 */
+    padding: 20px;
+    gap: 30px;              /* 左右兩欄的間距 */
+}
+
+/* 稍微微調按鈕樣式，確保寬度適中 */
+.recipe-btn {
+    display: inline-block;
+    padding: 8px 20px;
+    background-color: #2e7d32;
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-size: 0.9em;
+    white-space: nowrap;    /* 防止文字換行 */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.recipe-btn:hover {
+    background-color: #1b5e20;
+}
+
+/* 強化蔬菜名稱顯示 */
+.veg-name-highlight {
+    font-size: 1.3em;
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+
+body {
+    
+    /* 選擇其中一個色碼即可 */
+    background-color: #F1F8E9;
+    
+    /* 設定背景圖片 */
+    background-image: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('img/market.jpg');
+    
+    /* 背景圖片固定，不隨網頁捲動 */
+    background-attachment: fixed;
+    
+    /* 讓圖片填滿整個畫面 */
+    background-size: cover;
+    
+    /* 圖片置中 */
+    background-position: center;
+    
+    /* 設定字體與預設邊距 */
+    font-family: "Microsoft JhengHei", sans-serif;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
